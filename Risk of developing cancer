@@ -1,0 +1,130 @@
+### loading the libraries
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+library(sf)
+library(plotly)
+library(readr)
+
+###setting working Dictionary
+setwd("C:/Users/Administrator/Desktop/program")
+
+## loading the data
+cs <- read.csv("C:\\Users\\Administrator\\Desktop\\program\\archive\\Risk of Developing or Dying From Cancer.csv")
+
+### checking for summary in cancer case
+summary("cs")
+
+### checking for missing value Cancer Male.Risk.Development.Percentage
+sum(is.na("Male.Risk.Development.Percentage"))
+
+### checking for missing value  for Male.Risk.Development.Ratio.One.in.____.Person
+sum(is.na("Male.Risk.Development.Ratio.One.in.____.Person"))
+
+###checking for missing values for Male.Risk.Dying.Percentage
+sum(is.na("Male.Risk.Dying.Percentage"))
+
+### checking missing values for Male.Risk.Dying.Ratio.One.in.____.Person
+sum(is.na("Male.Risk.Dying.Ratio.One.in.____.Person"))
+
+### checking missing values for Female.Risk.Development.Percentage
+sum(is.na("Female.Risk.Development.Percentage"))
+
+### checking missing value for Female.Risk.Development.Ratio.One.in.____.Person
+sum(is.na("Female.Risk.Dying.Percentage"))
+
+### checking missing value for Female.Risk.Dying.Ratio.One.in.____.Person
+sum(is.na("Female.Risk.Dying.Ratio.One.in.____.Person"))*100
+
+###checking for duplicates
+sum((duplicated(cs)))
+
+###Create a bar graph for Male.Risk.Development.Percentage
+ggplot(data = cs, aes(x = Cancer.Type , fill = Male.Risk.Development.Percentage)) +
+  theme_bw() +
+  geom_bar()+
+  theme_minimal()+
+  coord_flip()
+
+### create bar graph for Male.Risk.Development.Ratio.One.in.____.Person
+ggplot(data=cs, aes(x= Cancer.Type,fill=Male.Risk.Development.Ratio.One.in.____.Person.)) +
+  geom_bar()+
+  theme_bw()+
+  theme_minimal()+
+  coord_flip()
+
+
+###create a bar graph for Male.Risk.Dying.Percentage
+ggplot(data = cs, aes(x = Cancer.Type , fill = Male.Risk.Dying.Percentage)) +
+  theme_bw() +
+  geom_bar()+
+  theme_minimal()+
+  coord_flip()
+
+### create a bar graph for Male.Risk.Dying.Ratio.One.in.____.Person.
+ggplot(data = cs, aes(x = Cancer.Type , fill = Male.Risk.Dying.Ratio.One.in.____.Person.)) +
+  theme_bw() +
+  geom_bar()+
+  theme_minimal()+
+  coord_flip()
+
+
+### create bar graph for Female.Risk.Development.Percentage
+ggplot(data = cs, aes(x = Cancer.Type , fill =Female.Risk.Development.Percentage )) +
+  theme_bw() +     
+  geom_bar()+     
+  theme_minimal()+
+  coord_flip()
+
+###create bar graph for Female.Risk.Development.Ratio.One.in.____.Person.
+ggplot(data = cs,aes(x=Cancer.Type, fill=Female.Risk.Development.Ratio.One.in.____.Person.))+
+  theme_bw()+
+  geom_bar()+
+  theme_minimal()+
+  coord_flip()
+
+###create bar graph for
+ggplot(data = cs, aes(x = Male.Risk.Development.Percentage, y =Cancer.Type )) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = y ~ x, color = "red",se=TRUE) +
+  labs(title = "Number of Cancer Cases", x = "numbers", y = "Male Risk Development Percentage")
+
+
+
+ggplot(data = cs, aes(x =Female.Risk.Development.Percentage , y = Cancer.Type, fill = Female.Risk.Development.Percentage)) +
+  geom_tile() +
+  scale_fill_gradient(low = "white", high = "red") +
+  labs(title = "Heatmap of Female Risk Development by Cancer Type", x = "Cancer Type", y = "Risk Percentage") +
+  theme_minimal()
+
+# Check the structure of the data
+str(cs)
+
+# Create a linear regression model to predict Male Risk Development Percentage from Cancer Type
+model <- lm(Male.Risk.Development.Percentage ~ Cancer.Type, data = cs)
+
+# Show the summary of the model
+summary(model)
+
+# Visualize the regression result
+ggplot(cs, aes(x = Cancer.Type, y = Male.Risk.Development.Percentage)) +
+  geom_point() +  # Scatter plot of the data points
+  geom_smooth(method = "lm", color = "red", se = FALSE) +  # Add regression line
+  labs(title = "Regression of Male Risk Development Percentage by Cancer Type", 
+       x = "Cancer Type", 
+       y = "Male Risk Development Percentage") +
+  theme_minimal() +
+  coord_flip()
+
+# Additional Multiple Regression Model
+multi_model <- lm(Male.Risk.Development.Percentage ~ Cancer.Type + Male.Risk.Dying.Percentage + Female.Risk.Development.Percentage, data = cs)
+summary(multi_model)
+
+# Heatmap for male vs female risk development percentages
+ggplot(cs, aes(x = Male.Risk.Development.Percentage, y = Female.Risk.Development.Percentage, fill = Male.Risk.Development.Percentage)) +
+  geom_tile() +
+  scale_fill_gradient(low = "white", high = "blue") +
+  labs(title = "Heatmap of Male vs Female Risk Development Percentages", x = "Male Risk Development Percentage", y = "Female Risk Development Percentage") +
+  theme_minimal()
+         
+
