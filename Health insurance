@@ -143,4 +143,80 @@ ggplot(medical, aes(x = predicted_charges, y = charges)) +
        y = "Actual Charges") +
   theme_minimal()
 
+library(e1071)
 
+medical$sex <- as.factor(medical$sex)
+medical$bmi <- as.factor(medical$bmi)
+medical$region <- as.factor(medical$region)
+
+set.seed(123)
+sample_index <- sample(seq_len(nrow(medical)), size = 0.7 * nrow(medical))
+train_data <- medical[sample_index, ]
+test_data <- medical[-sample_index, ]
+
+##Fit the SVM Model
+
+svm_model <- svm(charges ~ age + bmi + children + sex + smoker + region, 
+                 data = train_data, 
+                 type = "eps-regression", 
+                 kernel = "radial")  # Radial kernel is commonly used
+
+
+svm_model <- svm(charges ~ age + bmi + children + sex + smoker + region, 
+                 data = train_data, 
+                 type = "eps-regression", 
+                 kernel = "radial")  # Radial kernel is commonly used
+
+###Evaluate the Model
+# Predict on test data
+svm_predictions <- predict(svm_model, test_data)
+
+# Calculate Mean Squared Error
+svm_mse <- mean((svm_predictions - test_data$charges)^2)
+print(paste("SVM Mean Squared Error:", round(svm_mse, 2)))
+
+##plotting
+# Add predictions to test data
+test_data$svm_predicted_charges <- svm_predictions
+
+# Plot actual vs. predicted charges
+ggplot(test_data, aes(x = svm_predicted_charges, y = charges)) +
+  geom_point(color = "blue", alpha = 0.5) +
+  geom_abline(intercept = 0, slope = 1, color = "red") +
+  labs(title = "Actual vs Predicted Charges (SVM)",
+       x = "Predicted Charges",
+       y = "Actual Charges") +
+  theme_minimal()
+##Fit the SVM Model
+
+svm_model <- svm(charges ~ age + bmi + children + sex + smoker + region, 
+                 data = train_data, 
+                 type = "eps-regression", 
+                 kernel = "radial")  # Radial kernel is commonly used
+
+
+svm_model <- svm(charges ~ age + bmi + children + sex + smoker + region, 
+                 data = train_data, 
+                 type = "eps-regression", 
+                 kernel = "radial")  # Radial kernel is commonly used
+
+###Evaluate the Model
+# Predict on test data
+svm_predictions <- predict(svm_model, test_data)
+
+# Calculate Mean Squared Error
+svm_mse <- mean((svm_predictions - test_data$charges)^2)
+print(paste("SVM Mean Squared Error:", round(svm_mse, 2)))
+
+##plotting
+# Add predictions to test data
+test_data$svm_predicted_charges <- svm_predictions
+
+# Plot actual vs. predicted charges
+ggplot(test_data, aes(x = svm_predicted_charges, y = charges)) +
+  geom_point(color = "blue", alpha = 0.5) +
+  geom_abline(intercept = 0, slope = 1, color = "red") +
+  labs(title = "Actual vs Predicted Charges (SVM)",
+       x = "Predicted Charges",
+       y = "Actual Charges") +
+  theme_minimal()
