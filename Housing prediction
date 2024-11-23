@@ -1,0 +1,236 @@
+### predicting housing prediction according to price using linear regression model
+
+###loading libraries
+library(dplyr)
+library(tidyverse)
+library(readr)
+library(ggplot2)
+library(reshape2)
+
+###setting working directory
+
+setwd("C:/Users/Administrator/Desktop/New folder/USA Housing")
+
+###loading the dataset
+
+US<-read_csv("USA_Housing.csv")
+US
+###5000 rows and 7 columns
+
+###explore data
+str(US)
+
+###summary of the data
+
+summary(US)
+
+ ###checking missing values
+colSums(is.na(US))
+ 
+###There are no missing values in this dataset
+
+###checking distribution for USA housing columns
+
+ggplot(US, aes(x = `Avg. Area Income`)) +
+  geom_histogram(fill = "red", color = "black", bins = 30) +
+  labs(title = "Distribution of Avg. Area Income",
+       x = "Average",
+       y = "Count")
+
+ggplot(US, aes(x=`Avg. Area House Age`))+
+  geom_histogram(fill="red",color="black",bins = 30)+
+  labs(title = "Distribution of Avg. Area House Age",
+       x="Average",
+       y="count")
+
+ggplot(US,aes(x=`Avg. Area Number of Rooms`))+
+  geom_histogram(fill="red",color="black",bins = 30)+
+  labs(title = "Distribution of Avg. Area Number of Bedrooms",
+       x="Average",
+       y="count")
+
+
+ggplot(US, aes(x=`Avg. Area Number of Bedrooms`))+
+  geom_histogram(fill="red",color="black",bins=30)+
+  labs(title = "Distribution of Avg. Area Number of Bedrooms",
+       x="Average",
+       y="count")
+
+ggplot(US,aes(x=`Area Population`))+
+  geom_histogram(fill="red",color="black",bins=30)+
+  labs(title = "Distribution of Area Population",
+       x="Average",
+       y="count")
+
+ggplot(US,aes(x=Price))+
+  geom_histogram(fill="red",color="black",bins=30)+
+  labs(title = "Distribution by price ",
+       x="Average",
+       y="count")
+
+#### create a  scatter plot  between different columns and price
+ggplot(US, aes(x =`Avg. Area Income`, y = Price)) +
+  geom_point(color = "red", alpha = 0.5) +  # Scatter plot 
+  scale_fill_gradient(low = "white", high = "red") +  # Only needed if you use a `fill` aesthetic
+  labs(title = "Avg. Area Income vs. Price",
+       x = "Income",
+       y = "price")
+
+ggplot(US, aes(x =`Avg. Area House Age`, y = Price)) +
+  geom_point(color = "red", alpha = 0.5) +  # Scatter plot 
+  scale_fill_gradient(low = "white", high = "red") +  # Only needed if you use a `fill` aesthetic
+  labs(title = "Avg. Area House Age vs. Price",
+       x = "House age",
+       y = "price")
+
+ggplot(US, aes(x =`Avg. Area Number of Rooms`, y = Price)) +
+  geom_point(color = "red", alpha = 0.5) +  # Scatter plot 
+  scale_fill_gradient(low = "white", high = "red") +  # Only needed if you use a `fill` aesthetic
+  labs(title = " Avg. Area Number of Rooms vs. Price",
+       x = "Number of Rooms",
+       y = "price")
+
+ggplot(US, aes(x =`Avg. Area Number of Bedrooms`, y = Price)) +
+  geom_point(color = "red", alpha = 0.5) +  # Scatter plot 
+  scale_fill_gradient(low = "white", high = "red") +  # Only needed if you use a `fill` aesthetic
+  labs(title = " Avg. Area Number of Bedroom vs. Price",
+       x = "Number of Bedrooms",
+       y = "price")
+
+ggplot(US, aes(x =`Area Population`, y = Price)) +
+  geom_point(color = "red", alpha = 0.5) +  # Scatter plot 
+  scale_fill_gradient(low = "white", high = "red") +  # Only needed if you use a `fill` aesthetic
+  labs(title = " Area population vs. Price",
+       x = "Area population",
+       y = "price")
+
+### heatmap
+
+###Select numeric columns only
+numerical_columns<-US%>% select("Avg. Area Income","Avg. Area House Age","Avg. Area Number of Rooms","Avg. Area Number of Bedrooms","Area Population","Price")
+
+# Calculate correlation
+corr_matrix <- cor(numerical_columns, use = "complete.obs")
+corr_melted <- melt(corr_matrix)
+
+ggplot(data = corr_melted, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0, 
+                       limit = c(-1, 1), space = "Lab", 
+                       name = "Correlation") +
+  labs(title = "Correlation Heatmap",
+       x = " Distribution",
+       y = " plot") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+###evaluate model
+set.seed(123)  # For reproducibility
+sample_indices <- sample(1:nrow(US), size = 0.8 * nrow(US))
+train_data <- US[sample_indices, ]
+test_data <- US[-sample_indices, ]
+
+
+#  predictor variables are numeric
+US$`Avg. Area Income` <- as.numeric(US$`Avg. Area Income`)
+US$`Avg. Area House Age` <- as.numeric(US$`Avg. Area House Age`)
+US$`Area Population` <- as.numeric(US$`Area Population`)
+
+# Fit the linear regression model
+model <- lm(Price ~ `Avg. Area Income` + 
+              `Avg. Area House Age` + 
+              `Avg. Area Number of Rooms` + 
+              `Avg. Area Number of Bedrooms` + 
+              `Area Population`, data = US)
+
+# Display summary of the model
+summary(model)
+
+
+# Predict prices using the fitted model
+predicted_prices <- predict(model, newdata = US)
+
+# Add the predictions to the original dataset for comparison
+US$Predicted_Price <- predicted_prices
+
+# View the dataset with the predicted prices
+head(US)
+ggplot(US, aes(x = Price, y = Predicted_Price)) +
+  geom_point(color = "blue", alpha = 0.5) +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  labs(title = "Actual vs. Predicted Prices",
+       x = "Actual Price",
+       y = "Predicted Price") +
+  theme_minimal()
+ ## fit smv model
+library(e1071)
+# Fit the SVM model
+svm_model <- svm(Price ~ `Avg. Area Income` + 
+                   `Avg. Area House Age` + 
+                   `Avg. Area Number of Rooms` + 
+                   `Avg. Area Number of Bedrooms` + 
+                   `Area Population`,
+                 data = US,
+                 kernel = "radial",  # Kernel type: radial, linear, or polynomial
+                 cost = 1,          # Regularization parameter
+                 gamma = 0.1)       # Kernel coefficient
+
+### summary smv
+print(svm_model)  # Summary of the SVM model
+
+# Predict prices
+predicted_prices <- predict(svm_model, newdata = US)
+
+# Add predictions to the dataset
+US$Predicted_Price_SVM <- predicted_prices
+
+# View the dataset with predictions
+head(US)
+
+
+### caculate rmse
+rmse <- sqrt(mean((US$Price - US$Predicted_Price_SVM)^2))
+print(paste("RMSE:", rmse))
+
+###Mean Absolute Error (MAE)
+mae <- mean(abs(test_data$Price - predicted_prices))
+print(paste("MAE:", mae))
+
+
+
+### (Coefficient of Determination)
+ss_total <- sum((test_data$Price - mean(test_data$Price))^2)
+ss_residual <- sum((test_data$Price - predicted_prices)^2)
+r_squared <- 1 - (ss_residual / ss_total)
+print(paste("R-squared:", r_squared))
+
+###plot smv 
+ggplot(US, aes(x = Price, y = Predicted_Price_SVM)) +
+  geom_point(color = "blue", alpha = 0.5) +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  labs(title = "Actual vs. Predicted Prices (SVM)",
+       x = "Actual Price",
+       y = "Predicted Price") +
+  theme_minimal()
+
+###cross Validation
+library(caret)
+library(kernlab)
+
+# Define k-fold cross-validation
+control <- trainControl(method = "cv", number = 5)
+
+# Train the model using CV
+cv_model <- train(Price ~ `Avg. Area Income` + 
+                    `Avg. Area House Age` + 
+                    `Avg. Area Number of Rooms` + 
+                    `Avg. Area Number of Bedrooms` + 
+                    `Area Population`,
+                  data = US,
+                  method = "svmRadial",
+                  trControl = control)
+
+# Print results
+print(cv_model$results)
+
+
