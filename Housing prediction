@@ -1,4 +1,4 @@
-### predicting housing prediction according to price using linear regression model
+### predicting housing price using linear regression and Support Vector Machine (SVM)
 
 ###loading libraries
 library(dplyr)
