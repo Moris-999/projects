@@ -1,0 +1,155 @@
+### The main porpose foor these project build a model to predict charges for bmi and children
+### using linear regression & SMV and Descion tree
+
+### load in the libraries
+
+library(ggplot2)
+library(dplyr)
+library(tidyverse)
+library(readr)
+library(reshape2)
+
+####set working directory
+setwd("C:/Users/Administrator/Desktop/New folder/Medical Cost Prediction")
+
+###load the dataset
+MD<-read_csv("insurance.csv")
+
+### insurance has  rows 1338 and 7 columns it three chr and four dbl
+
+### explore data
+
+str(MD)
+
+###summary
+summary(MD)
+
+###checking missing values
+colSums(is.na(MD))
+
+## there no missing values
+
+### checking distribution bmi
+ggplot(MD,aes(bmi))+
+  geom_histogram(fill = "red", color = "black", bins = 30) +
+  labs(title = "Distribution of bmi",
+       x = "Distri",
+       y = "Count")
+
+### checking distribution of children
+ggplot(MD,aes(children))+
+  geom_histogram(fill = "red", color = "black", bins = 30) +
+  labs(title = "Distribution of chidren",
+       x = "Distri",
+       y = "Count")
+
+###checking disribution charges
+ggplot(MD,aes(charges))+
+  geom_histogram(fill = "red", color = "black", bins = 30) +
+  labs(title = "Distribution of charges",
+       x = "Distri",
+       y = "Count")
+
+###select numeric columns
+MD_columns<-MD%>%select("bmi","charges","children")
+
+# Calculate correlation
+corr_matrix <- cor(MD_columns, use = "complete.obs")
+corr_melted <- melt(corr_matrix)
+
+### plotting correlation
+ggplot(data = corr_melted, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0, 
+                       limit = c(-1, 1), space = "Lab", 
+                       name = "Correlation") +
+  labs(title = "Correlation Heatmap",
+       x = " Distribution",
+       y = " plot") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+###evaluate model
+set.seed(123)  # For reproducibility
+sample_indices <- sample(1:nrow(MD), size = 0.8 * nrow(MD))
+train_data <- MD[sample_indices, ]
+test_data <- MD[-sample_indices, ]
+
+#  predictor variables are numeric
+MD$bmi <- as.numeric(MD$bmi)
+MD$children <- as.numeric(MD$children)
+
+
+# Fit the linear regression model
+model <- lm(charges ~ bmi+ 
+              children,data=MD )
+
+###    Display summary of the model
+
+summary(model)
+
+###predict charges
+predicted_Charges <- predict(model, newdata = MD)
+
+# Add the predictions to the original dataset for comparison
+MD$predicted_Charges<-predicted_Charges
+
+# View the dataset with the predicted prices
+head(MD)
+
+ggplot(MD, aes(x = MD$charges, y =predicted_Charges )) +
+  geom_point(color = "blue", alpha = 0.5) +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  labs(title = "Actual vs. Predictedition",
+       x = "prediction",
+       y = "Predicted Charges") +
+  theme_minimal()
+
+###according the pridected charges bmi and children are charged around 10000 to 20000
+
+## fit smv model
+library(e1071)
+# Fit the SVM model
+svm_model <- svm(charges ~ bmi + 
+                   children, 
+                 data = MD,
+                 kernel = "radial",  # Kernel type: radial, linear, or polynomial
+                 cost = 1,          # Regularization parameter
+                 gamma = 0.1)       # Kernel coefficient
+
+
+### summary smv
+print(svm_model)  # Summary of the SVM model
+
+# Predict prices
+predicted_Charges <- predict(svm_model, newdata = MD)
+
+# Add predictions to the dataset
+
+MD$Predicted_Charges_SVM <- MD$predicted_Charges
+
+# View the dataset with predictions
+head(MD)
+
+### (Coefficient of Determination)
+ss_total <- sum((test_data$charges - mean(test_data$charges))^2)
+ss_residual <- sum((test_data$charges - predicted_Charges)^2)
+r_squared <- 1 - (ss_residual / ss_total)
+print(paste("R-squared:", r_squared))
+
+
+###plot smv 
+ggplot(MD, aes(x = charges, y = Predicted_Charges_SVM)) +
+  geom_point(color = "blue", alpha = 0.5) +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  labs(title = "Actual vs. Predicted Prices (SVM)",
+       x = "Actual Price",
+       y = "Predicted Price") +
+  theme_minimal()
+
+## evalute model accuracy
+mean((MD$predicted_Charges - MD$charges)^2)  # MSE
+mean(abs(MD$predicted_Charges - MD$charges)) # MAE
+
+
+
