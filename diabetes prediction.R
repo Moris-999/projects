@@ -197,5 +197,5 @@ auc(roc_obj)
 
 # Variable Importance Plot
 varImpPlot(rf_model, main = "Variable Importance (Random Forest)")
-
+### Diabetes random forest accuracy  is 95%
 
