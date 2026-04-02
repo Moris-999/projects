@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Easter Eggs</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to top, #fefbd8, #a7e3f4);
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    h1 {
+      color: #ff69b4;
+      font-size: 3em;
+      text-align: center;
+      text-shadow: 2px 2px #ffe4e1;
+      animation: bounce 1.5s infinite alternate;
+      z-index: 10;
+      position: relative;
+    }
+
+    @keyframes bounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-20px); }
+    }
+
+    .egg-container {
+      display: flex;
+      gap: 30px;
+      margin-top: 50px;
+      z-index: 10;
+      position: relative;
+    }
+
+    .egg {
+      width: 60px;
+      height: 80px;
+      background: pink;
+      border-radius: 50% 50% 45% 45%;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.3s;
+      overflow: hidden;
+    }
+
+    .egg:before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        45deg,
+        #fff,
+        #fff 5px,
+        #ff69b4 5px,
+        #ff69b4 10px
+      );
+      border-radius: 50% 50% 45% 45%;
+      top: 0;
+      left: 0;
+      transition: transform 0.5s;
+    }
+
+    .egg:hover {
+      transform: scale(1.2) rotate(10deg);
+      z-index: 2;
+    }
+
+    .egg.cracked:before {
+      transform: rotate(45deg) scale(0);
+      opacity: 0;
+    }
+
+    .message {
+      display: none;
+      margin-top: 30px;
+      font-size: 1.5em;
+      color: #4b0082;
+      text-align: center;
+      z-index: 10;
+      position: relative;
+      max-width: 300px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🐰 Happy Easter! 🐣</h1>
+
+  <div class="egg-container">
+    <div class="egg" onclick="revealMessage(this, 'Wishing you joy, love, and chocolate-filled happiness this Easter!')"></div>
+    <div class="egg" onclick="revealMessage(this, 'May your Easter basket be full of blessings and surprises!')"></div>
+    <div class="egg" onclick="revealMessage(this, 'Hop into happiness and have an egg-cellent Easter!')"></div>
+    <div class="egg" onclick="revealMessage(this, 'Wishing a wonderful Easter to my favorite friends and family.')"></div>
+  </div>
+
+  <div class="message" id="message"></div>
+
+  <script>
+    function revealMessage(egg, msg) {
+      // Crack the egg
+      egg.classList.add('cracked');
+
+      // Show message
+      const messageDiv = document.getElementById('message');
+      messageDiv.innerText = msg;
+      messageDiv.style.display = 'block';
+      messageDiv.style.animation = 'fade 0.8s';
+    }
+  </script>
+
+  <style>
+    @keyframes fade {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+
+</body>
+</html>
