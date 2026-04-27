@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nairobi Street Kitchen | Urban Dining</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&family=Montserrat:wght@300;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; }
+        h1, h2, .stencil { font-family: 'Stardos+Stencil', system-ui; }
+        .hero-gradient { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1600&q=80'); }
+        .accent-border { border-left: 4px solid #e11d48; }
+    </style>
+</head>
+<body class="bg-zinc-900 text-zinc-100">
+
+    <nav class="flex justify-between items-center p-6 bg-black/90 sticky top-0 z-50">
+        <div class="text-2xl font-bold tracking-tighter text-rose-600">NRB<span class="text-white">STREET</span></div>
+        <div class="hidden md:flex space-x-8 text-sm font-semibold uppercase tracking-widest">
+            <a href="#menu" class="hover:text-rose-500 transition">The Menu</a>
+            <a href="#about" class="hover:text-rose-500 transition">Our Story</a>
+            <a href="#visit" class="hover:text-rose-500 transition">Visit</a>
+        </div>
+        <a href="tel:0707800800" class="bg-rose-600 px-5 py-2 rounded-full text-sm font-bold hover:bg-rose-700 transition">Order Now</a>
+    </nav>
+
+    <header class="hero-gradient h-screen flex flex-col justify-center items-center text-center px-4 bg-cover bg-center">
+        <h1 class="text-6xl md:text-8xl mb-4 text-white">STREET KITCHEN</h1>
+        <p class="text-xl md:text-2xl max-w-2xl font-light italic">A multi-sensory culinary experience in the heart of Westlands.</p>
+        <div class="mt-8 flex space-x-4">
+            <button class="bg-white text-black px-8 py-3 font-bold uppercase tracking-tighter hover:bg-rose-600 hover:text-white transition">Book a Table</button>
+            <button class="border-2 border-white px-8 py-3 font-bold uppercase tracking-tighter hover:bg-white hover:text-black transition">Explore Stalls</button>
+        </div>
+    </header>
+
+    <section id="menu" class="py-20 px-6 max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+            <div>
+                <span class="text-rose-500 font-bold tracking-widest uppercase text-sm">Popular Bites</span>
+                <h2 class="text-4xl mt-2">CRAFTED ON THE STREET</h2>
+            </div>
+            <a href="#" class="text-rose-500 font-bold border-b-2 border-rose-500 pb-1 mt-4 md:mt-0">View Full Menu</a>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-zinc-800 p-4 group transition-transform hover:-translate-y-2">
+                <div class="h-64 bg-zinc-700 mb-4 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1601050690597-df056fb1ce24?auto=format&fit=crop&w=800&q=80" alt="Samosa" class="w-full h-full object-cover">
+                </div>
+                <h3 class="text-xl font-bold">Butter Chicken Samosa</h3>
+                <p class="text-zinc-400 mt-2 text-sm">A fusion masterpiece served with tangy tamarind chutney.</p>
+            </div>
+
+            <div class="bg-zinc-800 p-4 group transition-transform hover:-translate-y-2">
+                <div class="h-64 bg-zinc-700 mb-4 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1529006557810-274b9b2fc783?auto=format&fit=crop&w=800&q=80" alt="Pizza" class="w-full h-full object-cover">
+                </div>
+                <h3 class="text-xl font-bold">Smoked Chicken Pizza</h3>
+                <p class="text-zinc-400 mt-2 text-sm">Wood-fired perfection with local smoked poultry and fresh basil.</p>
+            </div>
+
+            <div class="bg-zinc-800 p-4 group transition-transform hover:-translate-y-2">
+                <div class="h-64 bg-zinc-700 mb-4 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&w=800&q=80" alt="Cocktail" class="w-full h-full object-cover">
+                </div>
+                <h3 class="text-xl font-bold">Signature Draft Beer</h3>
+                <p class="text-zinc-400 mt-2 text-sm">Chilled to perfection, best paired with our Korean BBQ chicken.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer id="visit" class="bg-black py-16 px-6 border-t border-zinc-800">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12">
+            <div>
+                <h2 class="text-3xl mb-6">FIND US</h2>
+                <div class="accent-border pl-4 space-y-2">
+                    <p class="text-lg">1870 Mpaka Rd, Nairobi</p>
+                    <p class="text-zinc-500">Open Daily: 10:00 AM — 10:00 PM</p>
+                    <p class="text-rose-500 font-bold">0707 800800</p>
+                </div>
+            </div>
+            <div class="flex flex-col justify-end">
+                <p class="text-zinc-500 text-sm">© 2026 Nairobi Street Kitchen. All vibes reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
